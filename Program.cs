@@ -19,23 +19,10 @@ namespace MyApp
 
            Task task = Task.Run(async () =>
             {
-
-                try
+                using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/kenbailey/MyAppGitHub"))
                 {
-                    File.AppendAllText("C:\\temp\\log.txt", DateTime.Now.ToShortTimeString() + " Starting update...\r\n");
-
-                    await UpdateManager.GitHubUpdateManager("https://github.com/kenbailey/MyAppGitHub");
-                    File.AppendAllText("C:\\temp\\log.txt", DateTime.Now.ToShortTimeString() + " Finished Update\r\n");
+                    await mgr.Result.UpdateApp();
                 }
-                catch (AggregateException aggEx)
-                {
-                    File.AppendAllText("C:\\temp\\log.txt", DateTime.Now.ToShortTimeString() + " Exception: " + aggEx.Message + "\r\n");
-                    foreach (Exception ex in aggEx.Flatten().InnerExceptions)
-                   { 
-                        File.AppendAllText("C:\\temp\\log.txt", DateTime.Now.ToShortTimeString() + " - " + ex.Message + "\r\n" + ex.StackTrace + "\r\n\r\n");
-                   }
-                }
-               
             });
 
 
